@@ -72,25 +72,27 @@ class MainVC: UITabBarController {
     private func configureAppearanceTB() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
+        appearance.backgroundColor = .systemBackground
         tabBar.standardAppearance = appearance
-        tabBar.backgroundColor = .white
-        tabBar.tintColor = .black
+        tabBar.backgroundColor = .systemBackground
+        tabBar.tintColor = .neutral8
     }
     
     func configureNavController(for rootViewController: UIViewController) -> UIViewController {
         let navController = UINavigationController(rootViewController:  rootViewController)
         navController.navigationBar.isTranslucent = false
-        navController.navigationBar.backgroundColor = .white
-        navController.interactivePopGestureRecognizer?.delegate = nil // 스와이프 제스처 enable true
+        navController.navigationBar.tintColor = .neutral8
+        navController.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        navController.navigationBar.backgroundColor = .systemBackground
+//        navController.interactivePopGestureRecognizer?.delegate = nil // 스와이프 제스처 enable true
         return navController
     }
     
     private func configureAppearanceNav() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.neutral8]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.neutral8]
     }
 }
 

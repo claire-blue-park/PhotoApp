@@ -1,15 +1,13 @@
 //
-//  HorizontalCardViewCVCell.swift
+//  VerticalImageViewCVCell.swift
 //  PhotoProject
 //
 //  Created by Claire on 1/19/25.
 //
 
 import UIKit
-import Kingfisher
-import SnapKit
 
-class HorizontalCardViewCVCell: BaseCVCell {
+class VerticalImageViewCVCell: BaseCVCell {
     
     let imageView = UIImageView()
     let starBadge = StarBadgeView()
@@ -20,7 +18,6 @@ class HorizontalCardViewCVCell: BaseCVCell {
     }
     
     override func configureView() {
-        imageView.layer.cornerRadius = 8
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
     }

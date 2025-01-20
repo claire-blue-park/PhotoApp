@@ -16,7 +16,9 @@ class BaseVC: UIViewController {
         setConstraints()
     }
     
-    func configureNav() {  }
+    func configureNav() {
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+    }
     func configureView() {
         view.backgroundColor = .systemBackground
     }

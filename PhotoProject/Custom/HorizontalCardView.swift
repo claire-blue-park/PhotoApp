@@ -10,10 +10,17 @@ import SnapKit
 
 
 class HorizontalCardView: BaseView {
+    var didSelectItem: ((Results) -> Void)?
     
     var sectionTitle = "제목" {
         willSet {
             titleLabel.text = newValue
+        }
+    }
+    
+    var topics: [Results] = [] {
+        didSet {
+            imageCV.reloadData()
         }
     }
 
@@ -35,7 +42,6 @@ class HorizontalCardView: BaseView {
     
     override func setConstraints() {
         connectProtocol()
-        
         addSubview(titleLabel)
         addSubview(imageCV)
         
@@ -47,8 +53,7 @@ class HorizontalCardView: BaseView {
         
         imageCV.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(4)
-            make.bottom.equalToSuperview()
-            make.horizontalEdges.equalToSuperview()
+            make.bottom.horizontalEdges.equalToSuperview()
         }
     }
 }
@@ -60,17 +65,20 @@ extension HorizontalCardView: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return topics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HorizontalCardViewCVCell.ofIdentifier, for: indexPath) as! HorizontalCardViewCVCell
-        cell.configureData(imageUrl: "https://i.pinimg.com/originals/af/95/45/af95451d7547b50c4bfd985d35537e1b.gif", count: indexPath.row)
+//        cell.configureData(imageUrl: "https://i.pinimg.com/originals/af/95/45/af95451d7547b50c4bfd985d35537e1b.gif", count: indexPath.row)
+        
+        let topic = topics[indexPath.row]
+        cell.configureData(imageUrl: topic.urls.raw, count: topic.likes)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 셀 선택시 상세 화면 이동
+        didSelectItem?(topics[indexPath.row])
     }
 }
 

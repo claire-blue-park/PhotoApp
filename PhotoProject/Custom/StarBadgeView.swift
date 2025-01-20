@@ -9,10 +9,14 @@ import UIKit
 import SnapKit
 
 class StarBadgeView: BaseView {
-    var count = 0
 
     private let iconImageView = UIImageView()
     private let countLabel =  UILabel()
+    
+    func setCount(_ count: Int) {
+        countLabel.text = count.formatted()
+    }
+    
     
     override func configureView() {
         backgroundColor = .neutral6
@@ -23,7 +27,6 @@ class StarBadgeView: BaseView {
         iconImageView.tintColor = .systemYellow
         iconImageView.contentMode = .scaleAspectFit
         
-        countLabel.text = count.formatted()
         countLabel.textColor = .neutral0
         countLabel.font = UIFont(name: Pretendard.regular, size: 10)
     }
