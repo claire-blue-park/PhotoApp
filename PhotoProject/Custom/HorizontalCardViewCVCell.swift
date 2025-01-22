@@ -9,10 +9,10 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-class HorizontalCardViewCVCell: BaseCVCell {
+final class HorizontalCardViewCVCell: BaseCVCell {
     
-    let imageView = UIImageView()
-    let starBadge = StarBadgeView()
+    private let imageView = UIImageView()
+    private let starBadge = StarBadgeView()
     
     func configureData(imageUrl: String, count: Int) {
         imageView.kf.setImage(with: URL(string: imageUrl))

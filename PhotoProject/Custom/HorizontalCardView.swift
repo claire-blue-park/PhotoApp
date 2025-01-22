@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 
-class HorizontalCardView: BaseView {
+final class HorizontalCardView: BaseView {
     var didSelectItem: ((Results) -> Void)?
     
     var sectionTitle = "제목" {
@@ -18,17 +18,22 @@ class HorizontalCardView: BaseView {
         }
     }
     
-    var topics: [Results] = [] {
-        didSet {
-            imageCV.reloadData()
-        }
-    }
+    var topics: [Results] = []
+    
+//    var topics: [Results] = [] {
+//        didSet {
+//            imageCV.reloadData()
+//        }
+//    }
 
     private let titleLabel = UILabel()
     private let imageCV = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    func reloadData() {
+        imageCV.reloadData()
+    }
+    
     override func configureView() {
-//        backgroundColor = .cyan
         titleLabel.textColor = .neutral8
         titleLabel.font = UIFont(name: Pretendard.bold, size: 18)
     
@@ -56,24 +61,23 @@ class HorizontalCardView: BaseView {
             make.bottom.horizontalEdges.equalToSuperview()
         }
     }
-}
-
-extension HorizontalCardView: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     private func connectProtocol() {
         imageCV.delegate = self
         imageCV.dataSource = self
     }
-    
+}
+
+extension HorizontalCardView: UICollectionViewDelegate, UICollectionViewDataSource {
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return topics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HorizontalCardViewCVCell.ofIdentifier, for: indexPath) as! HorizontalCardViewCVCell
-//        cell.configureData(imageUrl: "https://i.pinimg.com/originals/af/95/45/af95451d7547b50c4bfd985d35537e1b.gif", count: indexPath.row)
-        
         let topic = topics[indexPath.row]
-        cell.configureData(imageUrl: topic.urls.raw, count: topic.likes)
+        cell.configureData(imageUrl: topic.urls.thumb, count: topic.likes)
         return cell
     }
     

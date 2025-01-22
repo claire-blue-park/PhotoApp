@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class SortToggleButton: BaseButton {
+final class SortToggleButton: BaseButton {
     
     var status = Sorts.byLatest
     

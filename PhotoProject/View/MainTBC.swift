@@ -7,8 +7,7 @@
 
 import UIKit
 
-class MainVC: UITabBarController {
-    
+final class MainTBC: UITabBarController {
     
     private let tabBarItems = [(title: "토픽", image: "lamp"),
                                (title: "temp", image: "video"),
@@ -17,42 +16,19 @@ class MainVC: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        checkFontName()
-        
+
         configureTabBar()
         configureAppearanceTB()
         configureAppearanceNav()
     }
-    
-    private func checkFontName() {
-        for family in UIFont.familyNames {
-            print(family)
-            for names in UIFont.fontNames(forFamilyName: family) {
-                print( "== \(names)")
-            }
-        }
-        /*
-         Pretendard
-         == Pretendard-Regular
-         == Pretendard-Thin
-         == Pretendard-ExtraLight
-         == Pretendard-Light
-         == Pretendard-Medium
-         == Pretendard-SemiBold
-         == Pretendard-Bold
-         == Pretendard-ExtraBold
-         == Pretendard-Black
-         */
-    }
-    
+
     private func configureTabBar() {
         let firstVC = TopicVC()
-        let secondVC = TempSecondVC()
+        let secondVC = RandomVC()
         let thirdVC = SearchVC()
         let fourthVC = TempFourthVC()
         let vcs = [configureNavController(for: firstVC),
-                   configureNavController(for: secondVC),
+                   secondVC,
                    configureNavController(for: thirdVC),
                    configureNavController(for: fourthVC) ]
 
@@ -84,7 +60,6 @@ class MainVC: UITabBarController {
         navController.navigationBar.tintColor = .neutral8
         navController.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         navController.navigationBar.backgroundColor = .systemBackground
-//        navController.interactivePopGestureRecognizer?.delegate = nil // 스와이프 제스처 enable true
         return navController
     }
     
@@ -96,7 +71,7 @@ class MainVC: UITabBarController {
     }
 }
 
-extension MainVC: UITabBarControllerDelegate {
+extension MainTBC: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         print(item)
     }

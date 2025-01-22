@@ -35,6 +35,7 @@ struct Results: Decodable {
 struct PhotoUrls: Decodable {
     let raw: String
     let small: String
+    let thumb: String
 }
 
 struct ProfilePhotoUrls: Decodable {

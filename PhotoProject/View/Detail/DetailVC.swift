@@ -9,14 +9,16 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-class DetailVC: BaseVC {
+final class DetailVC: BaseVC {
     
-    var result: Results? = nil
+    private var result: Results? = nil
     
     private let scrollView = UIScrollView()
     private let profileView = ProfileView()
     private let imageView = UIImageView()
     private let infoView = PhotoInfoView()
+    
+    private let backButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +27,14 @@ class DetailVC: BaseVC {
 
     }
     
-    override func configureNav() {
-        navigationItem.largeTitleDisplayMode = .never
+    func setResults(result: Results) {
+        self.result = result
     }
+    
+//    override func configureNav() {
+//        navigationController?.isNavigationBarHidden = false
+//        navigationItem.largeTitleDisplayMode = .never
+//    }
     
     func configureData() {
         guard let result else {
@@ -44,21 +51,31 @@ class DetailVC: BaseVC {
         }
         self.profileView.configureData(imageUrl: result.user.profileImage.medium, name: result.user.name, date: "\(createdAt) 게시")
         
-        self.imageView.kf.setImage(with: URL(string: result.urls.raw))
+        self.imageView.kf.setImage(with: URL(string: result.urls.small))
         
-        NetworkManager.shared.callRequestForDetail(imageId: result.id) { statistics in
+        NetworkManager.shared.callRequest(api: .detail(id: result.id)) { (statistics: Statistics) in
             self.infoView.configureData(size: "\(result.width) X \(result.height)",
                                         views: statistics.views.total.formatted(),
                                         downloads: statistics.downloads.total.formatted())
+        } failureHandler: { code, message  in
+            self.showAlert(title: "Error code: \(code!)", message: message) {
+                self.dismiss(animated: true)
+            }
         }
     }
     
+    @objc
+    private func onBackTapped() {
+        dismiss(animated: false)
+    }
+    
     override func configureView() {
-//        scrollView.backgroundColor = .cyan
-//        infoView.backgroundColor = .green
         view.backgroundColor = .systemBackground
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        
+        backButton.configuration = .backButtonStyle()
+        backButton.addTarget(self, action: #selector(onBackTapped), for: .touchUpInside)
         
         scrollView.showsVerticalScrollIndicator = false
     }
@@ -68,15 +85,23 @@ class DetailVC: BaseVC {
         container.axis = .vertical
         container.spacing = 12
         
+        view.addSubview(backButton)
         view.addSubview(scrollView)
         scrollView.addSubview(container)
         
         [profileView, imageView, infoView].forEach { view in
             container.addArrangedSubview(view)
         }
+        
+        backButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading)
+            make.size.equalTo(44)
+        }
 
         scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(backButton.snp.bottom)
+            make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
         container.snp.makeConstraints { make in
@@ -85,7 +110,7 @@ class DetailVC: BaseVC {
         }
         
         imageView.snp.makeConstraints { make in
-            make.height.equalTo(300) // TODO: - 이미지 높이 수정
+            make.height.equalTo(300) // TODO: - 이미지 높이 유동적으로 수정
         }
     }
 }

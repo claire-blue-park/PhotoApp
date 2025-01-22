@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class StarBadgeView: BaseView {
+final class StarBadgeView: BaseView {
 
     private let iconImageView = UIImageView()
     private let countLabel =  UILabel()

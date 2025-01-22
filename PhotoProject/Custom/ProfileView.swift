@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-class ProfileView: BaseView {
+final class ProfileView: BaseView {
     
     private let profileImageView = UIImageView()
     private let vStack = UIStackView()
@@ -22,9 +22,15 @@ class ProfileView: BaseView {
         dateLabel.text = date
     }
     
+    func setTextColor(isWhite: Bool) {
+        [nameLabel, dateLabel].forEach { label in
+            label.textColor = isWhite ? .neutral0 : .neutral8
+        }
+    }
+    
     override func configureView() {
         profileImageView.layer.cornerRadius = 22
-        profileImageView.contentMode = .scaleAspectFit
+        profileImageView.contentMode = .scaleAspectFill
         profileImageView.clipsToBounds = true
         
         vStack.axis = .vertical

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ColorToggleButton: BaseButton {
+final class ColorToggleButton: BaseButton {
     
     var color = Colors.red
     var isTapped = false

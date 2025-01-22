@@ -7,10 +7,10 @@
 
 import UIKit
 
-class VerticalImageViewCVCell: BaseCVCell {
+final class VerticalImageViewCVCell: BaseCVCell {
     
-    let imageView = UIImageView()
-    let starBadge = StarBadgeView()
+    private let imageView = UIImageView()
+    private let starBadge = StarBadgeView()
     
     func configureData(imageUrl: String, count: Int) {
         imageView.kf.setImage(with: URL(string: imageUrl))

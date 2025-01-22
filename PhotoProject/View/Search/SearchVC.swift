@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchVC: BaseVC {
+final class SearchVC: BaseVC {
     
     private var page = 0
     private var total = 0
@@ -65,12 +65,6 @@ class SearchVC: BaseVC {
             make.top.trailing.equalToSuperview()
         }
         
-//        colorSV.snp.makeConstraints { make in
-//            make.verticalEdges.equalTo(sortButton)
-//            make.horizontalEdges.equalToSuperview()
-//            make.height.equalTo(44)
-//        }
-        
         imageCV.snp.makeConstraints { make in
             make.top.equalTo(sortButton.snp.bottom).offset(16)
             make.bottom.horizontalEdges.equalToSuperview()
@@ -105,18 +99,22 @@ extension SearchVC {
 //            showAlert(title: "검색어를 입력해주세요.", message: "한 자 이상의 검색어를 입력해주세요") { self.dismiss(animated: true) }
             return
         }
-        
-        NetworkManager.shared.callRequestForSearch(query: query, page: page, sort: sortButton.status) { results in
+
+        NetworkManager.shared.callRequest(api: .search(query: query, page: page, sort: sortButton.status)) { (results: SearchList) in
             self.total = results.total
             if self.page == 1 { self.results = results.results }
             else { self.results.append(contentsOf: results.results) }
             
             // 첫 검색일 경우 최상단으로 이동
-            if self.page == 1 {
+            if !results.results.isEmpty && self.page == 1 {
                 self.imageCV.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             }
          
             self.infoLabel.text = results.total == 0 ? Infos.infoNoResult.toString : ""
+        } failureHandler: { code, message  in
+            self.showAlert(title: "Error code: \(code!)", message: message) {
+                self.dismiss(animated: true)
+            }
         }
     }
 }
@@ -167,15 +165,17 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource {
 //        cell.configureData(imageUrl: "https://blog.kakaocdn.net/dn/qpghB/btq810ErYWP/Z1KWlyUgZvMyjvChQPhJW1/img.gif", count: indexPath.row)
         
         let result = results[indexPath.row]
-        cell.configureData(imageUrl: result.urls.raw, count: result.likes)
+        cell.configureData(imageUrl: result.urls.small, count: result.likes)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        navigationController?.modalPresentationStyle = .fullScreen
         let vc = DetailVC()
-        vc.result = results[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        vc.setResults(result: results[indexPath.row])
+//        navigationController?.pushViewController(vc, animated: true)
+        vc.modalPresentationStyle = .fullScreen
+        present(vc, animated: true)
     }
 }
 

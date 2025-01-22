@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class TopicVC: BaseVC {
+final class TopicVC: BaseVC {
     
     private let firstCardView = HorizontalCardView()
     private let secondCardView = HorizontalCardView()
@@ -32,8 +32,9 @@ class TopicVC: BaseVC {
     override func configureView() {
         let selectAction = { result in
             let vc = DetailVC()
-            vc.result = result
-            self.navigationController?.pushViewController(vc, animated: true)
+            vc.setResults(result: result)
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }
         
         firstCardView.sectionTitle = String(localized: "TopicTitle1")
@@ -42,8 +43,7 @@ class TopicVC: BaseVC {
         secondCardView.didSelectItem = selectAction
         thirdCardView.sectionTitle = String(localized: "TopicTitle3")
         thirdCardView.didSelectItem = selectAction
-        
-//        container.backgroundColor = .orange
+
         scrollView.showsVerticalScrollIndicator = false
     }
     
@@ -73,16 +73,47 @@ class TopicVC: BaseVC {
     }
     
     private func callNetwork() {
-        NetworkManager.shared.callRequestForTopic(topicSlug: TopicSlug.goldenHour, page: 1) { topics in
+        
+        let group = DispatchGroup()
+        
+        // 1. 첫 번째 토픽
+        group.enter()
+        NetworkManager.shared.callRequest(api: .topic(slug: TopicSlug.goldenHour, page: 1)) { (topics: [Results]) in
             self.firstCardView.topics = topics
+            group.leave()
+        } failureHandler: { code, message  in
+            self.showAlert(title: "Error code: \(code!)", message: message) {
+                self.dismiss(animated: true)
+            }
         }
         
-        NetworkManager.shared.callRequestForTopic(topicSlug: TopicSlug.businessWork, page: 1) { topics in
+        // 2. 두 번째 토픽
+        group.enter()
+        NetworkManager.shared.callRequest(api: .topic(slug: TopicSlug.businessWork, page: 1)) { (topics: [Results]) in
             self.secondCardView.topics = topics
+            group.leave()
+        } failureHandler: { code, message  in
+            self.showAlert(title: "Error code: \(code!)", message: message) {
+                self.dismiss(animated: true)
+            }
         }
         
-        NetworkManager.shared.callRequestForTopic(topicSlug: TopicSlug.architectureInterior, page: 1) { topics in
+        // 3. 세 번째 토픽
+        group.enter()
+        NetworkManager.shared.callRequest(api: .topic(slug: TopicSlug.architectureInterior, page: 1)) { (topics: [Results]) in
             self.thirdCardView.topics = topics
+            group.leave()
+        } failureHandler: { code, message  in
+            self.showAlert(title: "Error code: \(code!)", message: message) {
+                self.dismiss(animated: true)
+            }
         }
+        
+        group.notify(queue: .main) {
+            self.firstCardView.reloadData()
+            self.secondCardView.reloadData()
+            self.thirdCardView.reloadData()
+        }
+
     }
 }

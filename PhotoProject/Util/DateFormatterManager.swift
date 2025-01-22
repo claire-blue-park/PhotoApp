@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DateFormatterManager {
+final class DateFormatterManager {
     
     static let shared = DateFormatterManager()
     private static let dateFormatter = DateFormatter()

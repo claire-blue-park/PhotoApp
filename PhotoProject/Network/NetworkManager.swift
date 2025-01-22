@@ -8,58 +8,27 @@
 import Foundation
 import Alamofire
 
-class NetworkManager {
+final class NetworkManager {
     static let shared = NetworkManager()
     private init() { }
     
-    func callRequestForTopic(topicSlug: TopicSlug, page: Int, completionHandler: @escaping ([Results]) -> Void) {
-
-        let url: String = "https://api.unsplash.com/topics/\(topicSlug.topicIDQuery)/photos?"
-                        + "page=\(page)&"
-                        + "client_id=\(APIKey.unsplash)"
-
-        AF.request(url, method: .get).responseDecodable(of: [Results].self) { response in
-            switch response.result {
-            case .success(let value):
-                completionHandler(value)
-            case .failure(let error):
-                print(error)
+    func callRequest<T: Decodable>(api: UnsplashRequest,
+                                   completionHandler: @escaping (T) -> Void,
+                                   failureHandler: @escaping (_ code: Int?, _ message: String) -> Void) {
+        AF.request(api.endPoint, method: api.method, headers: api.header)
+            .validate(statusCode: 200..<300)
+            .responseDecodable(of: T.self) { response in
+                switch response.result {
+                case .success(let value):
+                    completionHandler(value)
+                case .failure(let error):
+                    if let responseCode = error.responseCode {
+                        let message = NetworkError(rawValue: responseCode)?.errorMessage
+                                   ?? NetworkError.unknown.errorMessage
+                        failureHandler(responseCode, message)
+                    }
+                    failureHandler(-1, "No ResponseCode")
+                }
             }
-        }
-    }
-    
-    func callRequestForSearch(query: String, page: Int, sort: Sorts, completionHandler: @escaping (SearchList) -> Void) {
-
-        let url: String = "https://api.unsplash.com/search/photos?"
-                        + "page=\(page)&"
-                        + "per_page=20&"
-                        + "order_by=\(sort.sortQuery)&"
-//                        + "color=\(color)&"
-                        + "query=\(query)&"
-                        + "client_id=\(APIKey.unsplash)"
-
-        AF.request(url, method: .get).responseDecodable(of: SearchList.self) { response in
-            switch response.result {
-            case .success(let value):
-                completionHandler(value)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    func callRequestForDetail(imageId: String, completionHandler: @escaping (Statistics) -> Void) {
-
-        let url: String = "https://api.unsplash.com/photos/\(imageId)/statistics?"
-                        + "client_id=\(APIKey.unsplash)"
-
-        AF.request(url, method: .get).responseDecodable(of: Statistics.self) { response in
-            switch response.result {
-            case .success(let value):
-                completionHandler(value)
-            case .failure(let error):
-                print(error)
-            }
-        }
     }
 }

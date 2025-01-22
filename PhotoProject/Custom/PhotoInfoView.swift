@@ -7,23 +7,23 @@
 
 import UIKit
 
-class PhotoInfoView: BaseView {
+final class PhotoInfoView: BaseView {
     
-    let categoryLabel = UILabel()
+    private let categoryLabel = UILabel()
 
-    let hStack = {
+    private let hStack = {
         let stack = UIStackView()
         stack.axis = .horizontal
         return stack
     }
     
-    let titleLabel = {
+    private let titleLabel = {
         let label = UILabel()
         label.font = UIFont(name: Pretendard.bold, size: 14)
         return label
     }
     
-    let infoLabel = {
+    private let infoLabel = {
         let label = UILabel()
         label.font = UIFont(name: Pretendard.regular, size: 12)
         label.textAlignment = .right

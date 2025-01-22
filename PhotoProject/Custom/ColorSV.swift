@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ColorSV: BaseSV {
+final class ColorSV: BaseSV {
     let currentColorButton: ColorToggleButton? = nil
     
     override init(frame: CGRect) {

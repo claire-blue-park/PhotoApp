@@ -41,4 +41,12 @@ extension UIButton.Configuration {
         configuration.baseForegroundColor = .neutral8
         return configuration
     }
+    
+    static func backButtonStyle() -> UIButton.Configuration {
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = UIImage(systemName: "chevron.backward")
+//        configuration.image?.withTintColor(.neutral8)
+        configuration.baseForegroundColor = .neutral8
+        return configuration
+    }
 }
