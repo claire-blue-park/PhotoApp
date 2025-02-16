@@ -1,5 +1,5 @@
 //
-//  BaseVC.swift
+//  BaseViewController.swift
 //  PhotoProject
 //
 //  Created by Claire on 1/18/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BaseVC: UIViewController {
+class BaseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
