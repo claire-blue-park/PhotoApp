@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SearchVC: BaseVC {
+final class SearchVC: BaseViewController {
     
     private var page = 0
     private var total = 0
@@ -171,7 +171,7 @@ extension SearchVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        navigationController?.modalPresentationStyle = .fullScreen
-        let vc = DetailVC()
+        let vc = DetailViewController()
         vc.setResults(result: results[indexPath.row])
 //        navigationController?.pushViewController(vc, animated: true)
         vc.modalPresentationStyle = .fullScreen

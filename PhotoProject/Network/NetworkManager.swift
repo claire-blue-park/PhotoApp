@@ -15,6 +15,7 @@ final class NetworkManager {
     func callRequest<T: Decodable>(api: UnsplashRequest,
                                    completionHandler: @escaping (T) -> Void,
                                    failureHandler: @escaping (_ code: Int?, _ message: String) -> Void) {
+        
         AF.request(api.endPoint, method: api.method, headers: api.header)
             .validate(statusCode: 200..<300)
             .responseDecodable(of: T.self) { response in

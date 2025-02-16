@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class TopicVC: BaseVC {
+final class TopicVC: BaseViewController {
     
     private let firstCardView = HorizontalCardView()
     private let secondCardView = HorizontalCardView()
@@ -31,7 +31,7 @@ final class TopicVC: BaseVC {
     
     override func configureView() {
         let selectAction = { result in
-            let vc = DetailVC()
+            let vc = DetailViewController()
             vc.setResults(result: result)
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)

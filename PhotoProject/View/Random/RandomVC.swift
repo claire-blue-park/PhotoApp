@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-final class RandomVC: BaseVC {
+final class RandomVC: BaseViewController {
     
     private let pagingCV = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
@@ -78,7 +78,7 @@ extension RandomVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = DetailVC()
+        let vc = DetailViewController()
         vc.setResults(result: randoms[indexPath.row])
         vc.modalPresentationStyle = .fullScreen
         present(vc, animated: true)
