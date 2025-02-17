@@ -1,5 +1,5 @@
 //
-//  DetailVC.swift
+//  DetailViewController.swift
 //  PhotoProject
 //
 //  Created by Claire on 1/18/25.
@@ -9,9 +9,9 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-final class DetailVC: BaseVC {
+final class DetailViewController: BaseViewController {
     
-    private var result: Results? = nil
+    private let viewModel = DetailViewModel()
     
     private let scrollView = UIScrollView()
     private let profileView = ProfileView()
@@ -23,44 +23,40 @@ final class DetailVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureData()
-
+        bindData()
     }
     
+    // 외부에서 값 받아옴
     func setResults(result: Results) {
-        self.result = result
+        viewModel.input.result.value = result
     }
+
     
-//    override func configureNav() {
-//        navigationController?.isNavigationBarHidden = false
-//        navigationItem.largeTitleDisplayMode = .never
-//    }
-    
-    func configureData() {
-        guard let result else {
-            showAlert(title: "사진을 찾을 수 없습니다.", message: "사진 정보가 없습니다.") {
-                self.dismiss(animated: true)
-                self.navigationController?.popViewController(animated: true)
+    private func bindData() {
+        viewModel.output.result.bind { [weak self] result in
+            guard let self else { return }
+            if let result {
+
+                profileView.configureData(imageUrl: result.user.profileImage.medium, name: result.user.name, date: "\(viewModel.output.postDateInfo)")
+
+                imageView.kf.setImage(with: URL(string: result.urls.small))
             }
-            return
+        
+            
         }
         
-        var createdAt = result.createdAt
-        DateFormatterManager.shared.getDateFormat(createdAt) { date in
-            createdAt = date
-        }
-        self.profileView.configureData(imageUrl: result.user.profileImage.medium, name: result.user.name, date: "\(createdAt) 게시")
-        
-        self.imageView.kf.setImage(with: URL(string: result.urls.small))
-        
-        NetworkManager.shared.callRequest(api: .detail(id: result.id)) { (statistics: Statistics) in
-            self.infoView.configureData(size: "\(result.width) X \(result.height)",
-                                        views: statistics.views.total.formatted(),
-                                        downloads: statistics.downloads.total.formatted())
-        } failureHandler: { code, message  in
-            self.showAlert(title: "Error code: \(code!)", message: message) {
-                self.dismiss(animated: true)
+        viewModel.output.imageInfo.bind { [weak self] info in
+            guard let self else { return }
+            if let info {
+                infoView.configureData(size: info.size, views: info.views, downloads: info.downloads)
+            } else {
+                showAlert(title: "사진을 찾을 수 없습니다.", message: viewModel.output.errorMessage) {
+                    self.dismiss(animated: true)
+                    self.navigationController?.popViewController(animated: true)
+                }
+                return
             }
+    
         }
     }
     
